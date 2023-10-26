@@ -26,6 +26,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    private val cameraAndLocationResultLauncher: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+                isGranted ->
+            if (isGranted){
+                Toast.makeText(this, "Permission Granted For Camera", Toast.LENGTH_LONG).show()
+            }else{
+                Toast.makeText(this, "Permission Denied For Camera", Toast.LENGTH_LONG).show()
+            }
+        }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
