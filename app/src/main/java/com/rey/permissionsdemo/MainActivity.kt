@@ -9,7 +9,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import android.Manifest
-
+import android.icu.text.CaseMap.Title
+import android.os.Message
+import androidx.appcompat.app.AlertDialog
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,9 +34,23 @@ class MainActivity : AppCompatActivity() {
         btnCameraPermission.setOnClickListener{
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)){
-
+                showRationaleDialog("Permission Demo requires Camera Access","Camera cannot be used because Camera access denied")
+            }else{
+                cameraResultLauncher.launch(Manifest.permission.CAMERA)
             }
         }
 
+    }
+
+    private fun showRationaleDialog(
+        title: String,
+        message: String,
+    ){
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Cancel"){dialog, _-> dialog.dismiss()
+            }
+        builder.create().show()
     }
 }
