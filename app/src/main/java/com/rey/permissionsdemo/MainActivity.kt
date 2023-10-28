@@ -27,13 +27,30 @@ class MainActivity : AppCompatActivity() {
         }
 
     private val cameraAndLocationResultLauncher: ActivityResultLauncher<Array<String>> =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
-                isGranted ->
-            if (isGranted){
-                Toast.makeText(this, "Permission Granted For Camera", Toast.LENGTH_LONG).show()
-            }else{
-                Toast.makeText(this, "Permission Denied For Camera", Toast.LENGTH_LONG).show()
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            permissions ->
+            permissions.entries.forEach{
+                val permissionName = it.key
+                val isGranted = it.value
+                if(isGranted){
+                    if (permissionName == Manifest.permission.ACCESS_FINE_LOCATION){
+                        Toast.makeText(this, "Permission Granted for Precise Location", Toast.LENGTH_LONG).show()
+                    }else if (permissionName == Manifest.permission.ACCESS_COARSE_LOCATION){
+                        Toast.makeText(this, "Permission Granted for Approximate Location", Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(this, "Permission Granted for Camera", Toast.LENGTH_LONG).show()
+                    }
+                }else{
+                    if (permissionName == Manifest.permission.ACCESS_FINE_LOCATION){
+                        Toast.makeText(this, "Permission Denied for Fine Location", Toast.LENGTH_LONG).show()
+                    }else if (permissionName == Manifest.permission.ACCESS_COARSE_LOCATION){
+                        Toast.makeText(this, "Permission Denied for Approximate Location", Toast.LENGTH_LONG).show()
+                    } else{
+                        Toast.makeText(this, "Permission Denied for Camera", Toast.LENGTH_LONG).show()
+                    }
+                }
             }
+
         }
 
 
@@ -47,7 +64,11 @@ class MainActivity : AppCompatActivity() {
                 shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)){
                 showRationaleDialog("Permission Demo requires Camera Access","Camera cannot be used because Camera access denied")
             }else{
-                cameraResultLauncher.launch(Manifest.permission.CAMERA)
+                cameraAndLocationResultLauncher.launch(
+                    arrayOf(Manifest.permission.CAMERA,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                )
             }
         }
 
